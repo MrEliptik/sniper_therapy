@@ -1,0 +1,39 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://scenes/player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/people.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/environment.tscn" type="PackedScene" id=3]
+
+[sub_resource type="ProceduralSky" id=2]
+sky_curve = 0.0465872
+sun_color = Color( 0.921569, 0.843137, 0.419608, 1 )
+sun_latitude = 51.94
+sun_longitude = 50.82
+
+[sub_resource type="Environment" id=3]
+background_mode = 2
+background_sky = SubResource( 2 )
+ambient_light_color = Color( 1, 1, 1, 1 )
+
+[node name="Game" type="Spatial"]
+
+[node name="Player" parent="." instance=ExtResource( 1 )]
+transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -2.34779, 0.408044, 0 )
+
+[node name="People" type="Node" parent="."]
+
+[node name="People" parent="People" instance=ExtResource( 2 )]
+transform = Transform( 0.225516, 0, -3.99364, 0, 4, 0, 3.99364, 0, 0.225516, 3.7228, 0, -0.57892 )
+
+[node name="People2" parent="People" instance=ExtResource( 2 )]
+transform = Transform( 0.225516, 0, -3.99364, 0, 4, 0, 3.99364, 0, 0.225516, 3.7228, 0, 0.955396 )
+
+[node name="Environment" parent="." instance=ExtResource( 3 )]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( 3 )
+
+[node name="GIProbe" type="GIProbe" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.60346, -0.0938544, 0 )
+visible = false
+extents = Vector3( 6.13725, 4.42585, 6.0855 )
