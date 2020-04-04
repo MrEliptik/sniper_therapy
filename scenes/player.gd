@@ -165,10 +165,12 @@ func process_input(delta):
 	# Scope the sniper
 	if Input.is_action_just_pressed("scope"):
 		if scoped:
+			$Scope.play()
 			$RotationHelper/Camera.fov = CAMERA_FOV_SCOPED_2X
 			scoped_2x = true
 			scoped = false
 		elif scoped_2x:
+			$Scope.play()
 			$Reticle.visible = false
 			$HUD/Crosshair.visible = true
 			$RotationHelper/Camera.fov = CAMERA_FOV_UNSCOPED
@@ -178,6 +180,7 @@ func process_input(delta):
 			$AnimationPlayer.play("scope")
 			scoped = true
 			$HUD/Crosshair.visible = false
+			$Scope.play()
 	# ----------------------------------
 
 func process_movement(delta):
