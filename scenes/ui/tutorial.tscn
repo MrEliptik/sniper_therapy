@@ -1,0 +1,151 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://fonts/Roboto-Regular.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://art/scientist/scientist_explanations.png" type="Texture" id=2]
+[ext_resource path="res://scenes/ui/tutorial.gd" type="Script" id=3]
+[ext_resource path="res://sounds/sfx/tutorial/speech.wav" type="AudioStream" id=4]
+[ext_resource path="res://sounds/sfx/tutorial/part1.wav" type="AudioStream" id=5]
+[ext_resource path="res://sounds/sfx/tutorial/part2.wav" type="AudioStream" id=6]
+[ext_resource path="res://sounds/sfx/tutorial/part3.wav" type="AudioStream" id=7]
+[ext_resource path="res://sounds/sfx/tutorial/part4.wav" type="AudioStream" id=8]
+
+[sub_resource type="DynamicFont" id=1]
+size = 24
+font_data = ExtResource( 1 )
+
+[node name="Tutorial" type="Control"]
+pause_mode = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Explanation 1" type="Label" parent="."]
+anchor_right = 1.0
+margin_left = 401.088
+margin_top = 70.1762
+margin_right = -374.912
+margin_bottom = 355.176
+custom_fonts/font = SubResource( 1 )
+text = "Hi Mr X, I am a generic scientist.
+
+We brought you out of your island to accomplish something big..
+
+A virus is spreading everywhere. A virus we can't name. We need you to do every thing possible to stop this.. I repeat, EVERYTHING!"
+align = 3
+autowrap = true
+percent_visible = 0.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Explanation 2" type="Label" parent="."]
+visible = false
+anchor_right = 1.0
+margin_left = 413.147
+margin_top = 126.684
+margin_right = -389.853
+margin_bottom = 364.684
+custom_fonts/font = SubResource( 1 )
+text = "I hope I made myself clear.
+
+Now, we're going to give you what you need to erradicate the virus. I'm sure you still know how to use it, right?
+...
+It has been a long time I know.. It'll be some sort of therapy for you!"
+valign = 3
+autowrap = true
+percent_visible = 0.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Explanation 3" type="Label" parent="."]
+visible = false
+anchor_right = 1.0
+margin_left = 395.059
+margin_top = 97.5514
+margin_right = -380.941
+margin_bottom = 350.551
+custom_fonts/font = SubResource( 1 )
+text = "You'll recognize sick people easily. They tend to cough and sneeze a lot. When you spot one, do not hesitate to act.. This thing spreads so easily.. It's terrifying!!
+
+Please try to limit the damages.. We don't want too many.. problems, you see?
+"
+valign = 3
+autowrap = true
+percent_visible = 0.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Explanation 4" type="Label" parent="."]
+visible = false
+anchor_right = 1.0
+margin_left = 466.831
+margin_top = 284.452
+margin_right = -431.169
+margin_bottom = 345.452
+custom_fonts/font = SubResource( 1 )
+text = "Now let's go, we count on you!!
+"
+valign = 3
+autowrap = true
+percent_visible = 0.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Scientist" type="TextureRect" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -301.0
+margin_top = -41.0
+margin_right = 288.0
+margin_bottom = 361.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 2 )
+expand = true
+stretch_mode = 4
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Tween" type="Tween" parent="."]
+
+[node name="ReadTimer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+
+[node name="Speak" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 4 )
+
+[node name="Part1" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 5 )
+
+[node name="Part2" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 6 )
+
+[node name="Part3" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 7 )
+
+[node name="Part4" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 8 )
+
+[node name="BeginDelay" type="Timer" parent="."]
+one_shot = true
+[connection signal="tween_all_completed" from="Tween" to="." method="_on_Tween_tween_all_completed"]
+[connection signal="timeout" from="ReadTimer" to="." method="_on_ReadTimer_timeout"]
+[connection signal="timeout" from="BeginDelay" to="." method="_on_BeginDelay_timeout"]

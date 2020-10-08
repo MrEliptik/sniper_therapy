@@ -1,0 +1,82 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://fonts/MotionControl-Bold.otf" type="DynamicFontData" id=1]
+[ext_resource path="res://fonts/Roboto-Regular.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://scenes/ui/buttons.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scenes/ui/deathScreen.gd" type="Script" id=4]
+
+[sub_resource type="DynamicFont" id=1]
+size = 130
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 48
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 48
+font_data = ExtResource( 2 )
+
+[node name="DeathScreen" type="Control"]
+pause_mode = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -393.0
+margin_top = -276.0
+margin_right = 394.0
+margin_bottom = 192.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Lose" type="Label" parent="VBoxContainer"]
+margin_right = 787.0
+margin_bottom = 131.0
+custom_fonts/font = SubResource( 1 )
+text = "YOU LOSE"
+align = 1
+
+[node name="TextVirus" type="Label" parent="VBoxContainer"]
+visible = false
+margin_top = 135.0
+margin_right = 787.0
+margin_bottom = 252.0
+custom_fonts/font = SubResource( 2 )
+text = "You let the virus spread.. 
+The world is dying because of you!"
+align = 1
+autowrap = true
+
+[node name="TextKill" type="Label" parent="VBoxContainer"]
+visible = false
+margin_top = 135.0
+margin_right = 787.0
+margin_bottom = 252.0
+custom_fonts/font = SubResource( 3 )
+text = "You killed half the population..
+You're supposed to stop the virus!"
+align = 1
+autowrap = true
+
+[node name="Buttons" parent="." instance=ExtResource( 3 )]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -160.758
+margin_top = 12.5641
+margin_right = 161.242
+margin_bottom = 217.564
+[connection signal="visibility_changed" from="." to="." method="_on_DeathScreen_visibility_changed"]
+[connection signal="exit" from="Buttons" to="." method="_on_Buttons_exit"]
+[connection signal="play_again" from="Buttons" to="." method="_on_Buttons_play_again"]

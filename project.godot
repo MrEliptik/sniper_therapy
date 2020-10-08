@@ -17,7 +17,15 @@ _global_script_class_icons={
 
 config/name="Sniper Therapy"
 run/main_scene="res://scenes/game.tscn"
-config/icon="res://icon.png"
+boot_splash/image="res://art/cover_16-9.png"
+config/icon="res://art/icons/res/mipmap-xxxhdpi/icon.png"
+config/macos_native_icon="res://art/icons/icon.icns"
+config/windows_native_icon="res://art/icons/icon.ico"
+
+[autoload]
+
+Settings="*res://settings.gd"
+Music="*res://scenes/music.tscn"
 
 [display]
 

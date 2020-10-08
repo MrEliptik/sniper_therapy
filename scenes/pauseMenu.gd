@@ -2,6 +2,7 @@ extends Control
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	set_process_input(true)
 	$VBoxContainer/ContinueBtn.grab_focus()
 	
 func _input(event):
@@ -12,6 +13,8 @@ func _input(event):
 func _on_ContinueBtn_pressed():
 	visible = false
 	get_tree().paused = false
+	if Input.get_mouse_mode() == Input.MOUSE_MODE_VISIBLE:
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 
 func _on_ExitBtn_pressed():

@@ -1,0 +1,64 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://fonts/MotionControl-Bold.otf" type="DynamicFontData" id=1]
+[ext_resource path="res://fonts/Roboto-Regular.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://scenes/ui/buttons.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scenes/ui/winScreen.gd" type="Script" id=4]
+
+[sub_resource type="DynamicFont" id=1]
+size = 130
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 48
+font_data = ExtResource( 2 )
+
+[node name="WinScreen" type="Control"]
+pause_mode = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -334.0
+margin_top = -238.0
+margin_right = 334.0
+margin_bottom = 147.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Win" type="Label" parent="VBoxContainer"]
+margin_right = 668.0
+margin_bottom = 131.0
+custom_fonts/font = SubResource( 1 )
+text = "YOU WON"
+align = 1
+
+[node name="Text" type="Label" parent="VBoxContainer"]
+margin_top = 135.0
+margin_right = 668.0
+margin_bottom = 192.0
+custom_fonts/font = SubResource( 2 )
+text = "You saved the world, thank you!"
+align = 1
+
+[node name="Buttons" parent="." instance=ExtResource( 3 )]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -147.736
+margin_top = 11.9068
+margin_right = 148.264
+margin_bottom = 214.907
+[connection signal="visibility_changed" from="." to="." method="_on_WinScreen_visibility_changed"]
+[connection signal="exit" from="Buttons" to="." method="_on_Buttons_exit"]
+[connection signal="play_again" from="Buttons" to="." method="_on_Buttons_play_again"]

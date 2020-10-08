@@ -1,5 +1,11 @@
 extends KinematicBody
 
+# Start screen
+signal play
+signal options
+
+signal hit(shot)
+
 const GRAVITY = -10
 var vel = Vector3()
 const MAX_SPEED = 1.5
@@ -11,7 +17,8 @@ const MAX_SPEED_SCOPED = 0.75
 const JUMP_SPEED_SCOPED = 2
 const ACCEL_SCOPED = 3.5
 
-const DAMAGE = 50
+const DAMAGE_HEAD = 100
+const DAMAGE_BODY = 50
 
 var dir = Vector3()
 
@@ -31,15 +38,24 @@ const OBJECT_THROW_FORCE = 8
 const OBJECT_GRAB_DISTANCE = 0.3
 const OBJECT_GRAB_RAY_DISTANCE = 1
 
-const CAMERA_FOV_SCOPED = 65
+const CAMERA_FOV_SCOPED = 55
 const CAMERA_FOV_UNSCOPED = 90
-const CAMERA_FOV_SCOPED_2X = 25
+const CAMERA_FOV_SCOPED_2X = 15
 var scoped = false
 var scoped_2x = false
 var can_fire = true
 var can_reload = true
 
+var safe_mode = false
+
+var ammo = 100
+var ammo_magazine = 5
+
+var game_started = false
+
 func _ready():
+	safe_mode = Settings.get_param("General", "safe_mode", false)
+	
 	set_process(true)
 	camera = $RotationHelper/Camera
 	rotation_helper = $RotationHelper
@@ -109,27 +125,11 @@ func process_input(delta):
 	if Input.is_action_just_pressed("ui_cancel"):
 		if Input.get_mouse_mode() == Input.MOUSE_MODE_VISIBLE:
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+			$PauseMenu.visible = false
 		else:
 			$PauseMenu.visible = true
 			get_tree().paused = true
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-	# ----------------------------------
-	
-	# ----------------------------------
-	# Throwing packs
-#	if Input.is_action_just_pressed("toss_pack"):
-#		var roll_pack_clone
-#		roll_pack_clone = roll_pack.instance()
-#		roll_pack_clone.connect('explode', self, 'on_explode')
-#
-#
-#		get_tree().root.add_child(roll_pack_clone)
-##		$Tween.interpolate_property(roll_pack_clone, 'scale', Vector3(0, 0, 0), Vector3(1, 1 ,1), 0.4, Tween.TRANS_LINEAR, Tween.EASE_IN)
-##		$Tween.start()
-#		roll_pack_clone.global_transform = $RotationHelper/GrenadeTossPos.global_transform
-#		roll_pack_clone.apply_impulse(Vector3(0,0,0), roll_pack_clone.global_transform.basis.z * PACK_THROW_FORCE)
-#		$RotationHelper/rocketLauncher/AnimationPlayer.play('fire')
-#		$Thump.play()
 	# ----------------------------------
 	
 	# ----------------------------------
@@ -141,24 +141,43 @@ func process_input(delta):
 				$AnimationPlayer.play('reload')
 			else:
 				$AnimationPlayer.play('reload')
+			if ammo == 0: return
+			ammo_magazine = 5
+			$HUD.set_magazine(ammo_magazine)
+			$HUD.set_ammo(ammo)
 	# ----------------------------------
 	
 	# ----------------------------------
 	# Fire
 	if Input.is_action_just_pressed("fire"):
 		if can_fire:
-			can_fire = false
-			can_reload = false
-			$Fire.play()
-			$StartReloadTimer.start()
-			$FireRateTimer.start()
+			if ammo == 0 or ammo_magazine == 0: 
+				$Empty.play()
+				return
+			if game_started:
+				ammo -= 1
+				ammo_magazine -=1
+				$HUD.set_magazine(ammo_magazine)
+				$HUD.set_ammo(ammo)
+					
+				can_fire = false
+				can_reload = false
+			if game_started:
+				if safe_mode:
+					$FireSafe.play()
+				else:
+					$Fire.play()
+				$StartReloadTimer.start()
+				$FireRateTimer.start()
 			if scoped:
 				fire_weapon()
-				$RotationHelper/Camera.shake(0.5, 20, 0.08)
+				if game_started:
+					$RotationHelper/Camera.shake(0.5, 20, 0.1)
 			else:
 				fire_weapon()
+				if game_started:
+					$RotationHelper/Camera.shake(0.5, 20, 0.05)
 				$AnimationPlayer.play('fire')
-				$RotationHelper/Camera.shake(0.5, 20, 0.02)
 	# ----------------------------------
 	
 	# ----------------------------------
@@ -259,13 +278,36 @@ func fire_weapon():
 	ray.force_raycast_update()
 
 	if ray.is_colliding():
-		var body = ray.get_collider()
-		print(body)
+		var area = ray.get_collider()
+		print(area.name)
+		
+		var body = area.get_parent()
+		
+		# Start screen
+		if not game_started:
+			if body.name == "Play":
+				emit_signal("play")
+				game_started = true
+			elif body.name == "Options":
+				emit_signal("options")
+			elif body.name == "Exit":
+				get_tree().quit()
 
 		if body == self:
 			pass
 		elif body.has_method("bullet_hit"):
-			body.bullet_hit(DAMAGE, ray.global_transform)
+			if area.name == 'HeadArea':
+				#emit_signal('hit', 'headshot')
+				if body.is_sick() and game_started:
+					$HUD.animate_score(DAMAGE_HEAD, $HUD.COLORS.YELLOW)
+				body.bullet_hit(DAMAGE_HEAD, ray.global_transform)
+				if not safe_mode: $Headshot.play()
+			else:
+				#emit_signal('hit', 'bodyshot')
+				if body.is_sick() and game_started:
+					$HUD.animate_score(DAMAGE_BODY, $HUD.COLORS.WHITE)
+				body.bullet_hit(DAMAGE_BODY, ray.global_transform)
+				$Hitmarker.play()
 
 func _on_AnimationPlayer_animation_finished(anim_name):
 	if anim_name == 'scope':
